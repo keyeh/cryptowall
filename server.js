@@ -43,6 +43,29 @@ function calculateCoinsTo(orderBook, price) {
 }
 
 
+function updateLocalBook(localBook, updateData) {
+	// Find entry to update in local order book
+	for (var i = localBook.length - 1; i >= 0; i--) {
+		// If an price entry in local book matches the update's price
+		if (localBook[i][0] == updateData[0]) {
+			// Update
+			if (updateData[1] == 0) {
+				// Remove order from book if count = 0
+				localBook.splice(i, 1)
+			} else {
+				// Otherwise, replace old order in book
+				localBook[i] = updateData;
+			}
+			localBook = sortBook(localBook);
+			return localBook;
+		}
+	}
+
+	// If update doesn't match anything, add it to the book.
+	localBook.push(updateData);
+	localBook = sortBook(localBook);
+}
+
 var WebSocket = require('ws');
 var w = new WebSocket("wss://api2.bitfinex.com:3000/ws");
 
@@ -80,20 +103,11 @@ w.onmessage = function(msg) {
 		// Heartbeat
 	} else if(typeof receivedData[1] == 'number') {
 		// Update order book
+		orderData = receivedData;
+		orderData.shift();	// Remove channel ID
 
-		// Find entry to update in local order book
-		for (var i = localBook.length - 1; i >= 0; i--) {
-			// If the price entry in local book matches the update's price
-			if (localBook[i][0] == receivedData[1]) {
-				// Update
-				console.log("updating book");
-				localBook[i][0] = receivedData[1];	//Price
-				localBook[i][1] = receivedData[2];	//Count
-				localBook[i][2] = receivedData[3];	//Amount
-			}
-		}
-		localBook = sortBook(localBook);
+		updateLocalBook(localBook, orderData);
 		
-		console.log(calculateCoinsTo(localBook, 670));
+		console.log(localBook);
 	}
 };
