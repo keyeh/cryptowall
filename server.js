@@ -1,6 +1,16 @@
 var book = require('./book');
 
 var WebSocket = require('ws');
+
+var WebSocketServer = require('ws').Server
+  , wss = new WebSocketServer({ port: 8080 });
+	
+	wss.broadcast = function broadcast(data) {
+		wss.clients.forEach(function each(client) {
+			client.send(JSON.stringify(data));
+		});
+	};
+
 var w = new WebSocket("wss://api2.bitfinex.com:3000/ws");
 
 var subRequest = {
@@ -8,7 +18,7 @@ var subRequest = {
 		"channel": "book",
 		"pair": "BTCUSD",
 		"prec": "P2",
-		"freq": "F0",
+		"freq": "F1",
 		"len":"25"
 	}
 
@@ -42,6 +52,13 @@ w.onmessage = function(msg) {
 
 		book.updateLocalBook(localBook, orderData);
 		
-		console.log(book.calculateCoinsTo(localBook, 670));
+		// console.log(book.calculateCoinsTo(localBook, 670));
+		wss.broadcast({
+			channel:'book',
+			timestamp:new Date().getTime(),
+			pair:subRequest.pair,
+			book:localBook
+		});
+
 	}
 };
