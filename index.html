@@ -1,0 +1,89 @@
+<html>
+<head>
+	<script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+	<script src="https://code.highcharts.com/stock/highstock.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+</head>
+
+
+
+
+<body>
+	<div id="container" style="height: 400px; min-width: 310px"></div>
+
+
+
+<script type="text/javascript">
+$(function () {
+    var ws = new WebSocket('ws://192.168.188.131:8080');
+    Highcharts.setOptions({
+        global : {
+            useUTC : false
+        }
+    });
+
+    // Create the chart
+    $('#container').highcharts('StockChart', {
+        chart : {
+             events: {
+                load: function () {
+
+                    var series = this.series[0];
+                ws.onmessage = function(event) {
+                    var wspacket = JSON.parse(event.data);
+                    var x = wspacket.timestamp,
+                        y = wspacket.coinsto;
+                    series.addPoint([x, y], true, true);
+                }
+                    
+                }
+            }
+        },
+
+        rangeSelector: {
+            buttons: [{
+                count: 1,
+                type: 'minute',
+                text: '1M'
+            }, {
+                count: 5,
+                type: 'minute',
+                text: '5M'
+            }, {
+                type: 'all',
+                text: 'All'
+            }],
+            inputEnabled: false,
+            selected: 0
+        },
+
+        title : {
+            text : 'Live random data'
+        },
+
+        exporting: {
+            enabled: false
+        },
+
+        series : [{
+            name : 'Random data',
+            data : (function () {
+                // generate an array of random data
+                var data = [], time = (new Date()).getTime(), i;
+
+                for (i = -999; i <= 0; i += 1) {
+                    data.push([
+                        time + i * 1000,
+                        Math.round(Math.random() * 100)
+                    ]);
+                }
+                return data;
+            }())
+        }]
+    });
+
+});
+
+</script>
+</body>
+</html>

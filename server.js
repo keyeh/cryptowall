@@ -18,7 +18,7 @@ var subRequest = {
 		"channel": "book",
 		"pair": "BTCUSD",
 		"prec": "P2",
-		"freq": "F1",
+		"freq": "F0",
 		"len":"25"
 	}
 
@@ -57,7 +57,8 @@ w.onmessage = function(msg) {
 			channel:'book',
 			timestamp:new Date().getTime(),
 			pair:subRequest.pair,
-			book:localBook
+			book:localBook,
+			coinsto:book.calculateCoinsTo(localBook, 640)
 		});
 
 	}
