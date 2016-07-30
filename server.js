@@ -18,7 +18,7 @@ var subRequest = {
 		"channel": "book",
 		"pair": "BTCUSD",
 		"prec": "P2",
-		"freq": "F0",
+		"freq": "F1",
 		"len":"25"
 	}
 
@@ -41,7 +41,6 @@ w.onmessage = function(msg) {
 		receivedData[1].length == parseInt(subRequest.len)*2) {
 
 		localBook = receivedData[1];
-		localBook = book.sortBook(localBook);
 	}
 	else if (typeof receivedData[1] == 'string' && receivedData[1] == 'hb') {
 		// Heartbeat
@@ -58,7 +57,6 @@ w.onmessage = function(msg) {
 			timestamp:new Date().getTime(),
 			pair:subRequest.pair,
 			book:localBook,
-			coinsto:book.calculateCoinsTo(localBook, 640)
 		});
 
 	}
