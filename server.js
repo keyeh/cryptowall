@@ -1,3 +1,12 @@
+var jsonfile = require('jsonfile')
+var file = './data.json'
+var bookHistorical = [];
+jsonfile.readFile(file, function(err, obj) {
+  if (typeof obj !== 'undefined') {
+	  bookHistorical = obj;
+  }
+});
+
 var book = require('./book');
 
 var WebSocket = require('ws');
@@ -18,8 +27,8 @@ var subRequest = {
 		"channel": "book",
 		"pair": "BTCUSD",
 		"prec": "P2",
-		"freq": "F1",
-		"len":"25"
+		"freq": "F2",
+		"len":"100"
 	}
 
 var subInfo;
@@ -50,7 +59,10 @@ w.onmessage = function(msg) {
 		orderData.shift();	// Remove channel ID
 
 		book.updateLocalBook(localBook, orderData);
-		
+		// bookHistorical.push(localBook);
+		// jsonfile.writeFile(file, bookHistorical, function (err) {
+		// });
+
 		// console.log(book.calculateCoinsTo(localBook, 670));
 		wss.broadcast({
 			channel:'book',

@@ -32,13 +32,13 @@ function calculateCoinsTo(orderBook, price) {
 		for (var i = bidsBook.length - 1; bidsBook[i][0] >= price; i--) {
 			sum += bidsBook[i][2]
 		}
-		return sum;
+		return Math.round(sum*Math.pow(10,4))/Math.pow(10,4);
 	} else if (price >= asksBook[0][0] && price <= asksBook[asksBook.length - 1][0]) {
 		// Price is an ask
 		for (var i = 0; asksBook[i][0] <= price; i++) {
 			sum += asksBook[i][2]
 		}
-		return sum * -1;
+		return Math.round(sum*Math.pow(10,4))/Math.pow(10,4) * -1;
 	}
 }
 
@@ -60,28 +60,30 @@ $(function() {
 			events: {
 				load: function() {
 
-					var series = this.series[0];
+					var coinsToLowSeries = this.series[0];
+					var coinsToHighSeries = this.series[1];
 					ws.onmessage = function(event) {
-					var wspacket = JSON.parse(event.data);
+						var wspacket = JSON.parse(event.data);
 						var sortedBook = sortBook(wspacket.book);
+
 						var x = wspacket.timestamp,
 							y = calculateCoinsTo(sortedBook, 640);
-						series.addPoint([x, y], true, true);
+						
+						coinsToLowSeries.addPoint([x, y], true, true);
+						
+						y = calculateCoinsTo(sortedBook, 690);
+						coinsToHighSeries.addPoint([x, y], true, true);
 					}
 
 				}
 			}
 		},
+
 		xAxis: {
 			type: 'datetime',
 			minTickInterval: 60 * 1000 * 1,
 			maxZoom: 60 * 1000 //1 minute
 		},
-		yAxis: {
-			min: 2000,
-			max: 3000
-		},
-
 		rangeSelector: {
 			buttons: [{
 				count: 1,
@@ -100,7 +102,7 @@ $(function() {
 		},
 
 		title: {
-			text: 'Live random data'
+			text: 'Bitfinex coins to $640 & $690'
 		},
 
 		exporting: {
@@ -110,6 +112,25 @@ $(function() {
 		series: [
 			{
 				name: 'Coins to $640',
+				color: 'red',
+				data: (function() {
+					// generate an array of random data
+					var data = [],
+						time = (new Date()).getTime(),
+						i;
+
+					for (i = -999; i <= 0; i += 1) {
+						data.push([
+							time + i * 1000,
+							Math.round(Math.random() * 200 + 2000)
+						]);
+					}
+					return data;
+				}())
+			},
+			{
+				name: 'Coins to $690',
+				color: 'green',
 				data: (function() {
 					// generate an array of random data
 					var data = [],
