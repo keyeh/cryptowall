@@ -107,7 +107,7 @@ $(function() {
 		},
 
 		title: {
-			text: 'Bitfinex coins to go down $50 & go up $50'
+			text: 'Bitfinex BTC required to move price up/down $50'
 		},
 
 		exporting: {
@@ -116,7 +116,7 @@ $(function() {
 
 		series: [
 			{
-				name: 'Coins to go down $50',
+				name: 'BTC needed to go down $50',
 				color: 'red',
 				data: (function() {
 					// generate an array of random data
@@ -134,7 +134,7 @@ $(function() {
 				}())
 			},
 			{
-				name: 'Coins to go up $50',
+				name: 'BTC needed to go up $50',
 				color: 'green',
 				data: (function() {
 					// generate an array of random data
