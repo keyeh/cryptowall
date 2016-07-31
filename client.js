@@ -66,12 +66,17 @@ $(function() {
 						var wspacket = JSON.parse(event.data);
 						var sortedBook = sortBook(wspacket.book);
 
+						var asksBook = getAsks(sortedBook);
+
+						var lowPrice = asksBook[0][0]-50;
+						var highPrice = asksBook[0][0]+50;
+
 						var x = wspacket.timestamp,
-							y = calculateCoinsTo(sortedBook, 640);
+							y = calculateCoinsTo(sortedBook, lowPrice);
 						
 						coinsToLowSeries.addPoint([x, y], true, true);
 						
-						y = calculateCoinsTo(sortedBook, 690);
+						y = calculateCoinsTo(sortedBook, highPrice);
 						coinsToHighSeries.addPoint([x, y], true, true);
 					}
 
@@ -102,7 +107,7 @@ $(function() {
 		},
 
 		title: {
-			text: 'Bitfinex coins to $640 & $690'
+			text: 'Bitfinex coins to go down $50 & go up $50'
 		},
 
 		exporting: {
@@ -111,7 +116,7 @@ $(function() {
 
 		series: [
 			{
-				name: 'Coins to $640',
+				name: 'Coins to go down $50',
 				color: 'red',
 				data: (function() {
 					// generate an array of random data
@@ -122,14 +127,14 @@ $(function() {
 					for (i = -999; i <= 0; i += 1) {
 						data.push([
 							time + i * 1000,
-							Math.round(Math.random() * 200 + 2000)
+							0
 						]);
 					}
 					return data;
 				}())
 			},
 			{
-				name: 'Coins to $690',
+				name: 'Coins to go up $50',
 				color: 'green',
 				data: (function() {
 					// generate an array of random data
@@ -140,7 +145,7 @@ $(function() {
 					for (i = -999; i <= 0; i += 1) {
 						data.push([
 							time + i * 1000,
-							Math.round(Math.random() * 200 + 2000)
+							0
 						]);
 					}
 					return data;

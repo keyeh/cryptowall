@@ -27,7 +27,7 @@ var subRequest = {
 		"channel": "book",
 		"pair": "BTCUSD",
 		"prec": "P2",
-		"freq": "F2",
+		"freq": "F1",
 		"len":"100"
 	}
 
