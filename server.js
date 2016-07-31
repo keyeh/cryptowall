@@ -143,6 +143,10 @@ else if (typeof receivedData[1] == 'string' && receivedData[1] == 'hb') {
 			timestamp:new Date().getTime(),
 			pair:subRequest.pair,
 			price: currentPrice,
+			plus10: book.calculateCoinsTo(localBook, currentPrice+10),
+			minus10: book.calculateCoinsTo(localBook, currentPrice-10)
+			plus25: book.calculateCoinsTo(localBook, currentPrice+25),
+			minus25: book.calculateCoinsTo(localBook, currentPrice-25)
 			plus50: book.calculateCoinsTo(localBook, currentPrice+50),
 			minus50: book.calculateCoinsTo(localBook, currentPrice-50)
 		}
